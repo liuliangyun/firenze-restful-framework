@@ -1,6 +1,6 @@
 package util;
 
-import entity.HttpRequest;
+import entity.RestfulRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -11,7 +11,7 @@ import java.util.List;
 public class RequestHandlerMapping {
     private List<RequestHandler> handlers;
 
-    public RequestHandler mapping (HttpRequest request) {
+    public RequestHandler mapping (RestfulRequest request) {
         return handlers.stream()
                 .filter(h -> h.isMatch(request))
                 .findFirst()

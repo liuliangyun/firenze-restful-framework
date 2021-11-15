@@ -12,13 +12,13 @@ public class BookResource {
 
     @GET
     @Path("/{id}")
-    public String getBookByIdWithPathParam (@PathParam("id") String id) {
+    public String getBook (@PathParam("id") String id) {
         return "getBook: " + id;
     }
 
     @POST
-    public String addBook (@RequestBody String body) {
-        return "addBook: " + body;
+    public MockRequestBody addBook (@RequestBody MockRequestBody body) {
+        return body;
     }
 
     @DELETE
@@ -29,7 +29,7 @@ public class BookResource {
 
     @PUT
     @Path("/{id}")
-    public String updateBook (@PathParam("id") String id) {
-        return "updateBook: " + id;
+    public MockRequestBody updateBook (@PathParam("id") String id, @RequestBody MockRequestBody body) {
+        return body;
     }
 }

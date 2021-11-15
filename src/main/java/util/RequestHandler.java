@@ -2,46 +2,62 @@ package util;
 
 import annotations.PathParam;
 import annotations.RequestBody;
-import entity.HttpMethod;
-import entity.HttpRequest;
+import com.alibaba.fastjson.JSON;
+import entity.RestfulRequest;
+import io.netty.handler.codec.http.HttpMethod;
 import lombok.Data;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 public class RequestHandler {
 
     private Object obj;
-    private Method resolver;
+    private Method method;
     private HttpMethod httpMethod;
     private String pathPattern;
 
 
-    public String handling (HttpRequest request) throws InvocationTargetException, IllegalAccessException {
-        if (resolver == null) {
+    public Object handling (RestfulRequest request) throws InvocationTargetException, IllegalAccessException {
+        if (method == null) {
             return null;
         }
-        Parameter[] parameters = resolver.getParameters();
-        Object[] pars = new Object[parameters.length];
+        Map<String, String> pathParams = parseRequest(request);
 
+        Parameter[] parameters = method.getParameters();
+        Object[] params = new Object[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
             Parameter p = parameters[i];
             if (p.isAnnotationPresent(PathParam.class)) {
                 String key = p.getDeclaredAnnotation(PathParam.class).value();
-                String value = request.getParams().get(key);
-                pars[i] = value;
+                params[i] = pathParams.get(key);
             } else if (p.isAnnotationPresent(RequestBody.class)){
-                pars[i] = request.getBody();
+                params[i] = JSON.parseObject(request.getBody(), p.getType());
             } else {
-                pars[i] = null;
+                params[i] = null;
             }
         }
-        return (String) resolver.invoke(obj, pars);
+        return method.invoke(obj, params);
     }
 
-    public boolean isMatch (HttpRequest request) {
+    private Map<String, String> parseRequest(RestfulRequest request) {
+        Map<String, String> pathParams = new HashMap<>();
+        String[] urlToken = request.getPath().split("/");
+        String[] pathPatternToken = pathPattern.split("/");
+        for (int i = 0; i < pathPatternToken.length; i++) {
+            if (pathPatternToken[i].matches("\\{(.*)\\}")) {
+                String key = pathPatternToken[i].substring(1, pathPatternToken[i].length() - 1);
+                pathParams.put(key, urlToken[i]);
+            }
+        }
+        return pathParams;
+    }
+
+    public boolean isMatch (RestfulRequest request) {
         return matchHttpMethod(request.getMethod()) && matchPathPattern(request.getPath());
     }
 
@@ -55,7 +71,7 @@ public class RequestHandler {
         if (urlToken.length != pathPatternToken.length) {
             return false;
         }
-        for (int i = 0; i< pathPatternToken.length; i++) {
+        for (int i = 0; i < pathPatternToken.length; i++) {
             if (pathPatternToken[i].matches("\\{(.*)\\}")) {
                 continue;
             }

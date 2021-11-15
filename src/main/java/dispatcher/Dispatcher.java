@@ -1,12 +1,12 @@
 package dispatcher;
 
-import entity.HttpRequest;
-import entity.HttpResponse;
+import entity.RestfulResponse;
+import io.netty.handler.codec.http.FullHttpRequest;
 
 public interface Dispatcher {
 
     void init ();
 
-    HttpResponse dispatch(HttpRequest restfulRequest);
+    RestfulResponse dispatch(FullHttpRequest httpRequest);
 
 }

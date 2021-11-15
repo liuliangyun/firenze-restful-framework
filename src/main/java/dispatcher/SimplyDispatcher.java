@@ -1,6 +1,8 @@
 package dispatcher;
 
 import entity.*;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import lombok.Data;
 import util.ResourceLoader;
 import util.RequestHandler;
@@ -24,21 +26,22 @@ public class SimplyDispatcher implements Dispatcher{
     }
 
     @Override
-    public HttpResponse dispatch(HttpRequest request) {
-        HttpResponse response = new HttpResponse();
+    public RestfulResponse dispatch(FullHttpRequest httpRequest) {
+        RestfulRequest request = RestfulRequest.of(httpRequest);
+        RestfulResponse response = new RestfulResponse();
         try {
             RequestHandler handler = requestHandlerMapping.mapping(request);
-            String responseData = handler.handling(request);
+            Object responseData = handler.handling(request);
             response.setBody(responseData);
-            response.setStatus(HttpStatus.OK);
+            response.setStatus(HttpResponseStatus.OK);
         } catch (NullPointerException e) {
-          response.setStatus(HttpStatus.NOT_FOUND);
+          response.setStatus(HttpResponseStatus.NOT_FOUND);
           e.printStackTrace();
         } catch (InvocationTargetException e) {
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            response.setStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
             e.printStackTrace();
         } catch (IllegalAccessException e) {
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            response.setStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
             e.printStackTrace();
         }
         return response;
