@@ -1,6 +1,5 @@
-package util;
+package entity;
 
-import entity.RestfulRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

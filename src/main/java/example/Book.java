@@ -1,9 +1,9 @@
-package resource;
+package example;
 
-public class MockRequestBody {
+public class Book {
     private String name;
 
-    public MockRequestBody(String name) {
+    public Book(String name) {
         this.name = name;
     }
 

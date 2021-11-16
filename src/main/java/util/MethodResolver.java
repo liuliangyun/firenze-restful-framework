@@ -37,4 +37,7 @@ public class MethodResolver {
         return sb.toString();
     }
 
+    public static boolean isRequestSubResource(Method method) {
+        return method.getReturnType().isAnnotationPresent(Path.class);
+    }
 }

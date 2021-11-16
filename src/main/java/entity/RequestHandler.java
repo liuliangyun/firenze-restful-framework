@@ -1,10 +1,10 @@
-package util;
+package entity;
 
 import annotations.PathParam;
 import annotations.RequestBody;
 import com.alibaba.fastjson.JSON;
-import entity.RestfulRequest;
 import io.netty.handler.codec.http.HttpMethod;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.lang.reflect.InvocationTargetException;
@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Data
+@AllArgsConstructor
 public class RequestHandler {
 
     private Object obj;

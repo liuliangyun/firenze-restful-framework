@@ -5,8 +5,8 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import lombok.Data;
 import util.ResourceLoader;
-import util.RequestHandler;
-import util.RequestHandlerMapping;
+import entity.RequestHandler;
+import entity.RequestHandlerMapping;
 
 import java.lang.reflect.InvocationTargetException;
 

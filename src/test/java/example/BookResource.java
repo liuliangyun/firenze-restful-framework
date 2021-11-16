@@ -1,4 +1,4 @@
-package resource;
+package example;
 
 import annotations.*;
 
@@ -17,7 +17,7 @@ public class BookResource {
     }
 
     @POST
-    public MockRequestBody addBook (@RequestBody MockRequestBody body) {
+    public Book addBook (@RequestBody Book body) {
         return body;
     }
 
@@ -29,7 +29,12 @@ public class BookResource {
 
     @PUT
     @Path("/{id}")
-    public MockRequestBody updateBook (@PathParam("id") String id, @RequestBody MockRequestBody body) {
+    public Book updateBook (@PathParam("id") String id, @RequestBody Book body) {
         return body;
+    }
+
+    @Path("/{id}")
+    public AuthorResource getBookAuthor (@PathParam("id") String id) {
+        return new AuthorResource();
     }
 }

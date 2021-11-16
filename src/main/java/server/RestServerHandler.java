@@ -19,7 +19,6 @@ public class RestServerHandler extends ChannelInboundHandlerAdapter {
     public RestServerHandler(SimplyDispatcher simplyDispatcher) {
         this.simplyDispatcher = simplyDispatcher;
         simplyDispatcher.init();
-        System.out.println(simplyDispatcher.getRequestHandlerMapping().getHandlers().size());
     }
 
     @Override
