@@ -31,10 +31,10 @@ public class SimplyDispatcherTest {
     }
 
     @Test
-    public void should_get_NOT_FOUND_when_request_url_is_not_found () {
+    public void should_get_bad_request_when_request_url_is_not_found () {
         FullHttpRequest httpRequest = new DefaultFullHttpRequest(HTTP_1_1, HttpMethod.GET, "/not-found-path");
         RestfulResponse response = simplyDispatcher.dispatch(httpRequest);
-        assertEquals(HttpResponseStatus.NOT_FOUND, response.getStatus());
+        assertEquals(HttpResponseStatus.BAD_REQUEST, response.getStatus());
         assertEquals(null, response.getBody());
     }
 

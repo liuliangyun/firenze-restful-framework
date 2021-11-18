@@ -35,9 +35,13 @@ public class SimplyDispatcher implements Dispatcher{
             RequestHandler handler = requestHandlerMapping.mapping(request);
             Object responseData = handler.handling(request);
             response.setBody(responseData);
-            response.setStatus(HttpResponseStatus.OK);
+            if (responseData == null) {
+                response.setStatus(HttpResponseStatus.NOT_FOUND);
+            } else{
+                response.setStatus(HttpResponseStatus.OK);
+            }
         } catch (NullPointerException e) {
-          response.setStatus(HttpResponseStatus.NOT_FOUND);
+          response.setStatus(HttpResponseStatus.BAD_REQUEST);
           e.printStackTrace();
         } catch (InvocationTargetException e) {
             response.setStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);

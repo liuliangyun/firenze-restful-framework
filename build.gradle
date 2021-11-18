@@ -25,3 +25,14 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+jar {
+    from {
+        configurations
+                .runtimeClasspath
+                .collect {
+                    zipTree(it)
+                }
+    }
+    duplicatesStrategy(DuplicatesStrategy.WARN)
+}
