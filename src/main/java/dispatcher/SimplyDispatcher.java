@@ -22,7 +22,8 @@ public class SimplyDispatcher implements Dispatcher{
     @Override
     public void init() {
         String resourcePath = dispatcherConfig.getResourcePath();
-        requestHandlerMapping = new RequestHandlerMapping(ResourceLoader.scan(resourcePath));
+        ResourceLoader resourceLoader = new ResourceLoader();
+        requestHandlerMapping = new RequestHandlerMapping(resourceLoader.scan(resourcePath));
     }
 
     @Override

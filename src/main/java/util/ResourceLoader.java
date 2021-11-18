@@ -2,6 +2,8 @@ package util;
 
 
 import annotations.*;
+import cdi.Container;
+import cdi.FirenzeContainer;
 import entity.RequestHandler;
 import io.netty.handler.codec.http.HttpMethod;
 import org.reflections.Reflections;
@@ -11,8 +13,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ResourceLoader {
+    private final Container firenzeContainer;
 
-    public static List<RequestHandler> scan (String packagePath) {
+    public ResourceLoader() {
+        firenzeContainer = new FirenzeContainer();
+    }
+
+    public List<RequestHandler> scan (String packagePath) {
         Reflections reflections = new Reflections(packagePath);
         Set<Class<?>> classSet = reflections.getTypesAnnotatedWith(Path.class);
 
@@ -23,11 +30,11 @@ public class ResourceLoader {
                 .collect(Collectors.toList());
     }
 
-    private static List<RequestHandler> loadResource (Class<?> cls, String path) {
+    private List<RequestHandler> loadResource (Class<?> cls, String path) {
         List<RequestHandler> handlers = new ArrayList<>();
 
         try {
-            Object obj = cls.newInstance();
+            Object obj = firenzeContainer.getComponent(cls);
             String rootPath = path + cls.getDeclaredAnnotation(Path.class).value();
             Method[] methods = cls.getDeclaredMethods();
             for (Method method : methods) {
