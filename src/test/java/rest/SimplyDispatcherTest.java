@@ -86,18 +86,26 @@ public class SimplyDispatcherTest {
 
     @Test
     public void should_get_OK_when_request_sub_resource () {
-        FullHttpRequest httpRequest = new DefaultFullHttpRequest(HTTP_1_1, HttpMethod.GET, "/book/1/author");
-        RestfulResponse response = simplyDispatcher.dispatch(httpRequest);
-        assertEquals(HttpResponseStatus.OK, response.getStatus());
-        assertEquals("getAllAuthors", response.getBody());
+        FullHttpRequest httpRequest1 = new DefaultFullHttpRequest(HTTP_1_1, HttpMethod.GET, "/book/1/author");
+        FullHttpRequest httpRequest2 = new DefaultFullHttpRequest(HTTP_1_1, HttpMethod.GET, "/author");
+        RestfulResponse response1 = simplyDispatcher.dispatch(httpRequest1);
+        RestfulResponse response2 = simplyDispatcher.dispatch(httpRequest2);
+        assertEquals(HttpResponseStatus.OK, response1.getStatus());
+        assertEquals(HttpResponseStatus.OK, response2.getStatus());
+        assertEquals("getBookAuthors", response1.getBody());
+        assertEquals("getAllAuthors", response2.getBody());
     }
 
     @Test
     public void should_get_OK_when_request_sub_resource_with_path_param () {
-        FullHttpRequest httpRequest = new DefaultFullHttpRequest(HTTP_1_1, HttpMethod.GET, "/book/1/author/2");
-        RestfulResponse response = simplyDispatcher.dispatch(httpRequest);
-        assertEquals(HttpResponseStatus.OK, response.getStatus());
-        assertEquals("getAuthor: 2", response.getBody());
+        FullHttpRequest httpRequest1 = new DefaultFullHttpRequest(HTTP_1_1, HttpMethod.GET, "/book/1/author/2");
+        FullHttpRequest httpRequest2 = new DefaultFullHttpRequest(HTTP_1_1, HttpMethod.GET, "/author/2");
+        RestfulResponse response1 = simplyDispatcher.dispatch(httpRequest1);
+        RestfulResponse response2 = simplyDispatcher.dispatch(httpRequest2);
+        assertEquals(HttpResponseStatus.OK, response1.getStatus());
+        assertEquals(HttpResponseStatus.OK, response2.getStatus());
+        assertEquals("getBookAuthor: 2", response1.getBody());
+        assertEquals("getAuthor: 2", response2.getBody());
     }
 
     @Test

@@ -39,6 +39,9 @@ public class BookResource {
 
     @Path("/{id}")
     public AuthorResource getBookAuthor (@PathParam("id") String id) {
-        return new AuthorResource();
+        String book = getBook(id);
+        AuthorResource authorResource = new AuthorResource();
+        authorResource.setBook(book);
+        return authorResource;
     }
 }
