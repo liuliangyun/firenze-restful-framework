@@ -3,11 +3,8 @@ package rest.dispatcher;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import lombok.Data;
-import rest.entity.RestfulRequest;
-import rest.entity.RestfulResponse;
+import rest.entity.*;
 import rest.util.ResourceLoader;
-import rest.entity.RequestHandler;
-import rest.entity.RequestHandlerMapping;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -32,8 +29,8 @@ public class SimplyDispatcher implements Dispatcher{
         RestfulRequest request = RestfulRequest.of(httpRequest);
         RestfulResponse response = new RestfulResponse();
         try {
-            RequestHandler handler = requestHandlerMapping.mapping(request);
-            Object responseData = handler.handling(request);
+            RequestHandler requestHandler = requestHandlerMapping.mapping(request);
+            Object responseData = requestHandler.handling(request);
             response.setBody(responseData);
             if (responseData == null) {
                 response.setStatus(HttpResponseStatus.NOT_FOUND);

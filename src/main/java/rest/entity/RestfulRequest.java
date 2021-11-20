@@ -5,7 +5,7 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.util.CharsetUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import rest.util.URIResolver;
+import rest.util.PathUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -21,8 +21,8 @@ public class RestfulRequest {
     public static RestfulRequest of(FullHttpRequest httpRequest) {
         HttpMethod method = httpRequest.method();
         String uri = httpRequest.uri();
-        String path = URIResolver.getURIPath(uri);
-        Map<String, List<String>> params = URIResolver.getURIParams(uri);
+        String path = PathUtils.getURIPath(uri);
+        Map<String, List<String>> params = PathUtils.getURIParams(uri);
         String body = httpRequest.content().toString(CharsetUtil.UTF_8);
         return new RestfulRequest(method, path, params, body);
     }

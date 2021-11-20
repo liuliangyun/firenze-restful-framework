@@ -4,9 +4,9 @@ package rest.util;
 import cdi.Container;
 import cdi.FirenzeContainer;
 import rest.annotations.Path;
-import rest.entity.RequestHandler;
-import io.netty.handler.codec.http.HttpMethod;
+import rest.entity.MethodHandler;
 import org.reflections.Reflections;
+import rest.entity.RequestHandler;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -25,35 +25,54 @@ public class ResourceLoader {
 
         return classSet
                 .stream()
-                .map(cls -> loadResource(cls, ""))
+                .map(cls -> loadResource(cls, "", null, null))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
 
-    private List<RequestHandler> loadResource (Class<?> cls, String path) {
-        List<RequestHandler> handlers = new ArrayList<>();
+    private List<RequestHandler> loadResource (Class<?> cls, String path, Object obj, List<MethodHandler> methodHandlers) {
+        List<RequestHandler> requestHandlers = new ArrayList<>();
 
         try {
-            Object obj = firenzeContainer.getComponent(cls);
-            String rootPath = path + cls.getDeclaredAnnotation(Path.class).value();
+            if (obj == null) {
+                obj = firenzeContainer.getComponent(cls);
+            }
+            if (methodHandlers == null) {
+                methodHandlers = new ArrayList<>();
+            }
+
+            String clsRootPath = cls.getDeclaredAnnotation(Path.class).value();
+            String fullPath = path + clsRootPath;
             Method[] methods = cls.getDeclaredMethods();
             for (Method method : methods) {
-                String pathPattern = MethodResolver.getPathPattern(rootPath, method);
+                List<MethodHandler> subMethodHandlers = new ArrayList<>();
+                subMethodHandlers.addAll(methodHandlers);
+                String methodPathPattern = MethodUtils.getPathPattern(clsRootPath, method);
+                String fullPathPattern = MethodUtils.getPathPattern(fullPath, method);
 
-                if (MethodResolver.isAnnotatedHttpMethod(method)) {
-                    HttpMethod httpMethod = MethodResolver.getHttpMethod(method);
-                    RequestHandler handler = new RequestHandler(obj, method, httpMethod, pathPattern);
-                    handlers.add(handler);
-                } else if (MethodResolver.isRequestSubResource(method)) {
-                    List<RequestHandler> subHandlers = loadResource(method.getReturnType(), pathPattern);
-                    handlers.addAll(subHandlers);
+                if (MethodUtils.isAnnotatedHttpMethod(method)) {
+                    MethodHandler handler = new MethodHandler(method, methodPathPattern);
+                    subMethodHandlers.add(handler);
+
+                    RequestHandler requestHandler = new RequestHandler();
+                    requestHandler.setMethodHandlers(subMethodHandlers);
+                    requestHandler.setPathPattern(fullPathPattern);
+                    requestHandler.setHttpMethod(MethodUtils.getHttpMethod(method));
+                    requestHandler.setObj(obj);
+                    requestHandlers.add(requestHandler);
+                } else if (MethodUtils.isRequestSubResource(method)) {
+                    MethodHandler handler = new MethodHandler(method, methodPathPattern);
+                    subMethodHandlers.add(handler);
+
+                    List<RequestHandler> subHandlers = loadResource(method.getReturnType(), fullPathPattern, obj, subMethodHandlers);
+                    requestHandlers.addAll(subHandlers);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return handlers;
+        return requestHandlers;
     }
 
 }

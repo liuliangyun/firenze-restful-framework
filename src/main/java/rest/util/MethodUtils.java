@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class MethodResolver {
+public class MethodUtils {
     private static final Map<Class, HttpMethod> ANNOTATION_HTTP_METHOD_MAP = new HashMap<Class, HttpMethod>() {
         {
             put(GET.class, HttpMethod.GET);

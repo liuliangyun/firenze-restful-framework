@@ -27,7 +27,7 @@ public class SimplyDispatcherTest {
 
     @Test
     public void should_init_request_handler_mapping () {
-        assertEquals(11, simplyDispatcher.getRequestHandlerMapping().getHandlers().size());
+        assertEquals(11, simplyDispatcher.getRequestHandlerMapping().getRequestHandlers().size());
     }
 
     @Test

@@ -8,10 +8,10 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class RequestHandlerMapping {
-    private List<RequestHandler> handlers;
+    private List<RequestHandler> requestHandlers;
 
     public RequestHandler mapping (RestfulRequest request) {
-        return handlers.stream()
+        return requestHandlers.stream()
                 .filter(h -> h.isMatch(request))
                 .findFirst()
                 .orElse(null);
