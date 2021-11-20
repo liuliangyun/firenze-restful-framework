@@ -21,6 +21,9 @@ public class RequestHandler {
         Object instance = obj;
         for (MethodHandler handler: methodHandlers) {
             instance = handler.handling(request, instance);
+            if (instance == null) {
+                break;
+            }
         }
         return instance;
     }
